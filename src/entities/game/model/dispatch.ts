@@ -1,47 +1,109 @@
-import type { Game, GameResult } from "./types"
-import type { GameAction } from "./actions"
-import { drawCard } from "./drawCard"
+import type { GameAction } from "./actions";
+import { drawCard } from "./drawCard";
+import { checkGameEnd } from "./gameEnd";
+import { getCurrentPlayer } from "./selectors/getCurrentPlayer";
+import { getRoute } from "./selectors/getRoute";
+import type { Game, GameResult } from "./types";
 
-export function dispatch(game: Game, action: GameAction) {
+export function dispatch(game: Game, action: GameAction): GameResult {
   switch (action.type) {
     case "DRAW_CARD":
-      return handleDrawCard(game)
+      return handleDrawCard(game);
 
     case "END_TURN":
-      return handleEndTurn(game)
+      return handleEndTurn(game);
+
+    case "CLAIM_ROUTE":
+      return handleClaimRoute(game, action);
 
     default:
-      return { ok: false, error: "Unknown action" }
+      return { ok: false, error: "Unknown action" };
   }
 }
 
 function handleDrawCard(game: Game): GameResult {
-  if (game.status !== "playing") {
-    return { ok: false, error: "Game is not active" }
+  if (game.status !== "playing")
+    return { ok: false, error: "Game is not active" };
+  if (game.turn.phase !== "draw")
+    return { ok: false, error: "Cannot draw cards in this phase" };
+  if (game.deck.length === 0) return { ok: false, error: "Deck is empty" };
+  if (game.turn.cardsDrawn >= 2)
+    return { ok: false, error: "Already drew 2 cards this turn" };
+
+  let updatedGame = drawCard(game);
+
+  if (updatedGame.turn.cardsDrawn >= 2) {
+    updatedGame = {
+      ...updatedGame,
+      turn: {
+        phase: "claim",
+        cardsDrawn: updatedGame.turn.cardsDrawn,
+      },
+    };
   }
 
-  if (game.deck.length === 0) {
-    return { ok: false, error: "Deck is empty" }
-  }
-
-  if (game.turn.cardsDrawn >= 2) {
-    return { ok: false, error: "Already drew 2 cards this turn" }
-  }
-
-  const updatedGame = drawCard(game)
-
-  return { ok: true, game: updatedGame }
+  updatedGame = checkGameEnd(updatedGame);
+  return { ok: true, game: updatedGame };
 }
 
 function handleEndTurn(game: Game): GameResult {
-  const nextPlayerIndex =
-    (game.currentPlayerIndex + 1) % game.players.length
+  const nextPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
 
   const updatedGame: Game = {
     ...game,
     currentPlayerIndex: nextPlayerIndex,
-    turn: { cardsDrawn: 0 },
+    turn: {
+      phase: "draw",
+      cardsDrawn: 0,
+    },
+  };
+
+  return { ok: true, game: updatedGame };
+}
+
+function handleClaimRoute(
+  game: Game,
+  action: Extract<GameAction, { type: "CLAIM_ROUTE" }>,
+): GameResult {
+  if (game.turn.phase !== "claim")
+    return { ok: false, error: "Cannot claim route in this phase" };
+
+  const player = getCurrentPlayer(game);
+  const route = getRoute(game, action.routeId);
+  if (!route) return { ok: false, error: "Route not found" };
+  if (route.ownerId) return { ok: false, error: "Route already claimed" };
+  if (action.cards.length !== route.length)
+    return { ok: false, error: "Wrong number of cards" };
+
+  const playerCards = [...player.cards];
+  for (const card of action.cards) {
+    const index = playerCards.indexOf(card);
+    if (index === -1)
+      return { ok: false, error: "Player doesn't have required cards" };
+    playerCards.splice(index, 1);
   }
 
-  return { ok: true, game: updatedGame }
+  const updatedPlayers = game.players.map((p) =>
+    p.id === player.id
+      ? { ...p, cards: playerCards, score: p.score + route.length }
+      : p,
+  );
+  const updatedRoutes = game.routes.map((r) =>
+    r.id === route.id ? { ...r, ownerId: player.id } : r,
+  );
+
+  let updatedGame: Game = {
+    ...game,
+    players: updatedPlayers,
+    routes: updatedRoutes,
+    discardPile: [...game.discardPile, ...action.cards],
+    turn: {
+      phase: "draw",
+      cardsDrawn: 0,
+    },
+    currentPlayerIndex: (game.currentPlayerIndex + 1) % game.players.length,
+  };
+
+  updatedGame = checkGameEnd(updatedGame);
+  return { ok: true, game: updatedGame };
 }

@@ -1,5 +1,3 @@
-// src/entities/game/model/types.ts
-
 export type PlayerId = string
 export type RouteId = string
 export type CityId = string
@@ -45,6 +43,7 @@ export interface Game {
 }
 
 export interface TurnState {
+  phase: "draw" | "claim"
   cardsDrawn: number
 }
 
