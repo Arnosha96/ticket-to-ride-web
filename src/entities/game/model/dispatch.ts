@@ -1,5 +1,5 @@
 import type { GameAction } from "./actions";
-import { drawCard } from "./drawCard";
+import { drawCardFromDeck, drawCardFromFaceUp } from "./drawCard";
 import { checkGameEnd } from "./gameEnd";
 import { getCurrentPlayer } from "./selectors/getCurrentPlayer";
 import { getRoute } from "./selectors/getRoute";
@@ -8,7 +8,7 @@ import type { Game, GameResult } from "./types";
 export function dispatch(game: Game, action: GameAction): GameResult {
   switch (action.type) {
     case "DRAW_CARD":
-      return handleDrawCard(game);
+      return handleDrawCard(game, action);
 
     case "END_TURN":
       return handleEndTurn(game);
@@ -21,16 +21,30 @@ export function dispatch(game: Game, action: GameAction): GameResult {
   }
 }
 
-function handleDrawCard(game: Game): GameResult {
-  if (game.status !== "playing")
-    return { ok: false, error: "Game is not active" };
-  if (game.turn.phase !== "draw")
-    return { ok: false, error: "Cannot draw cards in this phase" };
-  if (game.deck.length === 0) return { ok: false, error: "Deck is empty" };
-  if (game.turn.cardsDrawn >= 2)
-    return { ok: false, error: "Already drew 2 cards this turn" };
+function handleDrawCard(
+  game: Game,
+  action: Extract<GameAction, { type: "DRAW_CARD" }>
+): GameResult {
 
-  let updatedGame = drawCard(game);
+  if (game.status !== "playing")
+    return { ok: false, error: "Game is not active" }
+
+  if (game.turn.phase !== "draw")
+    return { ok: false, error: "Cannot draw cards in this phase" }
+
+  if (game.turn.cardsDrawn >= 2)
+    return { ok: false, error: "Already drew 2 cards this turn" }
+
+  let updatedGame: Game
+
+  if (action.source === "deck") {
+    if (game.deck.length === 0)
+      return { ok: false, error: "Deck is empty" }
+
+    updatedGame = drawCardFromDeck(game)
+  } else {
+    updatedGame = drawCardFromFaceUp(game, action.index)
+  }
 
   if (updatedGame.turn.cardsDrawn >= 2) {
     updatedGame = {
@@ -39,11 +53,12 @@ function handleDrawCard(game: Game): GameResult {
         phase: "claim",
         cardsDrawn: updatedGame.turn.cardsDrawn,
       },
-    };
+    }
   }
 
-  updatedGame = checkGameEnd(updatedGame);
-  return { ok: true, game: updatedGame };
+  updatedGame = checkGameEnd(updatedGame)
+
+  return { ok: true, game: updatedGame }
 }
 
 function handleEndTurn(game: Game): GameResult {
@@ -84,10 +99,15 @@ function handleClaimRoute(
   }
 
   const updatedPlayers = game.players.map((p) =>
-    p.id === player.id
-      ? { ...p, cards: playerCards, score: p.score + route.length }
-      : p,
-  );
+  p.id === player.id
+    ? {
+        ...p,
+        cards: playerCards,
+        score: p.score + route.length,
+        trains: p.trains - route.length,
+      }
+    : p,
+)
   const updatedRoutes = game.routes.map((r) =>
     r.id === route.id ? { ...r, ownerId: player.id } : r,
   );

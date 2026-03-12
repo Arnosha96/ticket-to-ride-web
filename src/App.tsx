@@ -1,14 +1,23 @@
 import { createGame } from "./entities/game/model/createGame";
 import { dispatch } from "./entities/game/model/dispatch";
 import { getCurrentPlayer } from "./entities/game/model/selectors/getCurrentPlayer";
+import { europeRoutes } from "./entities/map/europe";
 
 function App() {
-  let game = createGame(["Alice", "Bob"]);
+  let game = createGame(["Alice", "Bob"], europeRoutes);
 
-  let result = dispatch(game, { type: "DRAW_CARD" });
+  let result = dispatch(game, {
+    type: "DRAW_CARD",
+    source: "faceUp",
+    index: 2,
+  });
   game = result.ok ? result.game : game;
 
-  result = dispatch(game, { type: "DRAW_CARD" });
+  result = dispatch(game, {
+    type: "DRAW_CARD",
+    source: "faceUp",
+    index: 2,
+  });
   game = result.ok ? result.game : game;
 
   console.log("Phase after 2 draws:", game.turn.phase);
@@ -23,6 +32,14 @@ function App() {
 
   console.log("Next player:", getCurrentPlayer(game));
   console.log("Phase:", game.turn.phase);
+
+  console.log(
+    "Trains:",
+    game.players.map((p) => ({
+      name: p.name,
+      trains: p.trains,
+    })),
+  );
 
   return <div>Check console</div>;
 }

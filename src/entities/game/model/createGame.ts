@@ -1,4 +1,5 @@
-import type { CardColor, Game, Player } from "./types";
+import { europeTickets } from "../../map/europeTickets";
+import type { CardColor, Game, Player, Route, Ticket } from "./types";
 
 function createDeck(): CardColor[] {
   const colors: CardColor[] = [
@@ -27,32 +28,63 @@ function createDeck(): CardColor[] {
   return shuffle(deck);
 }
 
+function drawFromDeck(deck: CardColor[]): {
+  card: CardColor;
+  deck: CardColor[];
+} {
+  return {
+    card: deck[0],
+    deck: deck.slice(1),
+  };
+}
+
 function shuffle<T>(array: T[]): T[] {
   return [...array].sort(() => Math.random() - 0.5);
 }
 
-export function createGame(playerNames: string[]): Game {
-  const players: Player[] = playerNames.map((name) => ({
-    id: crypto.randomUUID(),
-    name,
-    cards: [],
-    score: 0,
-  }));
+function drawTickets(deck: Ticket[], count: number) {
+  return {
+    tickets: deck.slice(0, count),
+    deck: deck.slice(count),
+  };
+}
+
+export function createGame(playerNames: string[], routes: Route[]): Game {
+  let ticketDeck = shuffle(europeTickets);
+
+  const players: Player[] = playerNames.map((name) => {
+    const draw = drawTickets(ticketDeck, 3);
+
+    ticketDeck = draw.deck;
+
+    return {
+      id: crypto.randomUUID(),
+      name,
+      cards: [],
+      score: 0,
+      trains: 45,
+      tickets: draw.tickets,
+    };
+  });
+
+  let deck = createDeck();
+
+  const faceUpCards: CardColor[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    const draw = drawFromDeck(deck);
+    faceUpCards.push(draw.card);
+    deck = draw.deck;
+  }
 
   return {
     id: crypto.randomUUID(),
     players,
-    routes: [
-      {
-        id: "route1",
-        cityA: "paris",
-        cityB: "berlin",
-        length: 3,
-        color: "red",
-      },
-    ],
-    deck: createDeck(),
+    routes,
+    deck,
     discardPile: [],
+    ticketDeck,
+    faceUpCards,
     currentPlayerIndex: 0,
     status: "playing",
     turn: { phase: "draw", cardsDrawn: 0 },

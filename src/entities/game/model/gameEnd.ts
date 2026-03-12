@@ -1,10 +1,11 @@
 import type { Game } from "./types"
 
 export function checkGameEnd(game: Game): Game {
-  const isAnyPlayerLowCards = game.players.some(p => p.cards.length <= 2)
-  const isDeckEmpty = game.deck.length === 0
+  const isAnyPlayerLowTrains = game.players.some(
+    (p) => p.trains <= 2
+  )
 
-  if (isAnyPlayerLowCards || isDeckEmpty) {
+  if (isAnyPlayerLowTrains) {
     return { ...game, status: "finished" }
   }
 
