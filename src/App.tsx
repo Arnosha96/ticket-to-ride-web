@@ -4,7 +4,9 @@ import { getCurrentPlayer } from "./entities/game/model/selectors/getCurrentPlay
 import { europeRoutes } from "./entities/map/europe";
 
 function App() {
-  let game = createGame(["Alice", "Bob"], europeRoutes);
+  let game = createGame(["Alice", "Artur"], europeRoutes);
+
+  console.log('Game1:', game)
 
   let result = dispatch(game, {
     type: "DRAW_CARD",
@@ -40,6 +42,29 @@ function App() {
       trains: p.trains,
     })),
   );
+
+  console.log('Game:', game)
+
+  result = dispatch(game, {
+    type: "END_TURN",
+  });
+  game = result.ok ? result.game : game;
+
+  result = dispatch(game, {
+    type: "DRAW_CARD",
+    source: "faceUp",
+    index: 2,
+  });
+  game = result.ok ? result.game : game;
+
+  result = dispatch(game, {
+    type: "DRAW_CARD",
+    source: "faceUp",
+    index: 2,
+  });
+  game = result.ok ? result.game : game;
+
+  console.log('Game:', game)
 
   return <div>Check console</div>;
 }

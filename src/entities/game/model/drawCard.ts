@@ -1,23 +1,5 @@
 import type { Game } from "./types";
-
-export function drawCardFromDeck(game: Game): Game {
-  const playerIndex = game.currentPlayerIndex;
-  const drawnCard = game.deck[0];
-
-  const updatedPlayers = game.players.map((p, i) =>
-    i === playerIndex ? { ...p, cards: [...p.cards, drawnCard] } : p,
-  );
-
-  return {
-    ...game,
-    players: updatedPlayers,
-    deck: game.deck.slice(1),
-    turn: {
-      ...game.turn,
-      cardsDrawn: game.turn.cardsDrawn + 1,
-    },
-  };
-}
+import { reshuffleDiscard } from "./utils/discard"; 
 
 export function drawCardFromFaceUp(game: Game, index: number): Game {
   if (index < 0 || index >= game.faceUpCards.length) {
@@ -30,20 +12,61 @@ export function drawCardFromFaceUp(game: Game, index: number): Game {
     i === playerIndex ? { ...p, cards: [...p.cards, card] } : p,
   );
 
-  const newFaceUpCards = [...game.faceUpCards];
+  let updatedGame = { ...game, players: updatedPlayers };
+  if (updatedGame.deck.length === 0) {
+    updatedGame = reshuffleDiscard(updatedGame);
+  }
 
-  const replacement = game.deck[0];
+  const replacement = updatedGame.deck[0] ?? null; 
+  const newFaceUpCards = [...updatedGame.faceUpCards];
 
-  newFaceUpCards[index] = replacement;
+  if (replacement) {
+    newFaceUpCards[index] = replacement;
+    updatedGame = {
+      ...updatedGame,
+      faceUpCards: newFaceUpCards,
+      deck: updatedGame.deck.slice(1),
+    };
+  } else {
+    newFaceUpCards.splice(index, 1);
+    updatedGame = {
+      ...updatedGame,
+      faceUpCards: newFaceUpCards,
+    };
+  }
 
   return {
-    ...game,
-    players: updatedPlayers,
-    faceUpCards: newFaceUpCards,
-    deck: game.deck.slice(1),
+    ...updatedGame,
     turn: {
-      ...game.turn,
-      cardsDrawn: card === "locomotive" ? 2 : game.turn.cardsDrawn + 1,
+      ...updatedGame.turn,
+      cardsDrawn: card === "locomotive" ? 2 : updatedGame.turn.cardsDrawn + 1,
+    },
+  };
+}
+
+export function drawCardFromDeck(game: Game): Game {
+  let currentGame = game;
+  if (currentGame.deck.length === 0) {
+    currentGame = reshuffleDiscard(currentGame);
+  }
+  if (currentGame.deck.length === 0) {
+    return game; 
+  }
+
+  const playerIndex = currentGame.currentPlayerIndex;
+  const drawnCard = currentGame.deck[0];
+
+  const updatedPlayers = currentGame.players.map((p, i) =>
+    i === playerIndex ? { ...p, cards: [...p.cards, drawnCard] } : p,
+  );
+
+  return {
+    ...currentGame,
+    players: updatedPlayers,
+    deck: currentGame.deck.slice(1),
+    turn: {
+      ...currentGame.turn,
+      cardsDrawn: currentGame.turn.cardsDrawn + 1,
     },
   };
 }

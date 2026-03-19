@@ -3,7 +3,7 @@ import { drawCardFromDeck, drawCardFromFaceUp } from "./drawCard";
 import { checkGameEnd } from "./gameEnd";
 import { getCurrentPlayer } from "./selectors/getCurrentPlayer";
 import { getRoute } from "./selectors/getRoute";
-import type { Game, GameResult } from "./types";
+import type { CardColor, Game, GameResult } from "./types";
 
 export function dispatch(game: Game, action: GameAction): GameResult {
   switch (action.type) {
@@ -89,6 +89,37 @@ function handleClaimRoute(
   if (route.ownerId) return { ok: false, error: "Route already claimed" };
   if (action.cards.length !== route.length)
     return { ok: false, error: "Wrong number of cards" };
+
+  if (player.trains < route.length)
+    return { ok: false, error: "Not enough trains" };
+
+  const isGray = route.color === "gray";
+  const requiredColor = isGray ? null : route.color;
+  const usedLocomotives: CardColor[] = [];
+  const usedColorCards: CardColor[] = [];
+
+  for (const card of action.cards) {
+    if (card === "locomotive") {
+      usedLocomotives.push(card);
+    } else {
+      usedColorCards.push(card);
+    }
+  }
+
+ if (!isGray) {
+    const allMatch = usedColorCards.every(c => c === requiredColor);
+    if (!allMatch) {
+      return { ok: false, error: `All colored cards must be ${requiredColor}` };
+    }
+  } else {
+    if (usedColorCards.length > 0) {
+      const firstColor = usedColorCards[0];
+      const allSameColor = usedColorCards.every(c => c === firstColor);
+      if (!allSameColor) {
+        return { ok: false, error: "All colored cards must be the same color for a gray route" };
+      }
+    }
+  }
 
   const playerCards = [...player.cards];
   for (const card of action.cards) {

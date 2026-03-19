@@ -38,8 +38,13 @@ function drawFromDeck(deck: CardColor[]): {
   };
 }
 
-function shuffle<T>(array: T[]): T[] {
-  return [...array].sort(() => Math.random() - 0.5);
+export function shuffle<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
 }
 
 function drawTickets(deck: Ticket[], count: number) {
@@ -51,23 +56,28 @@ function drawTickets(deck: Ticket[], count: number) {
 
 export function createGame(playerNames: string[], routes: Route[]): Game {
   let ticketDeck = shuffle(europeTickets);
+  let deck = createDeck();
 
   const players: Player[] = playerNames.map((name) => {
     const draw = drawTickets(ticketDeck, 3);
+    const cards: CardColor[] = [];
+    for (let i = 0; i < 4; i++) {
+      const draw = drawFromDeck(deck);
+      cards.push(draw.card);
+      deck = draw.deck;
+    }
 
     ticketDeck = draw.deck;
 
     return {
       id: crypto.randomUUID(),
       name,
-      cards: [],
+      cards: cards,
       score: 0,
       trains: 45,
       tickets: draw.tickets,
     };
   });
-
-  let deck = createDeck();
 
   const faceUpCards: CardColor[] = [];
 
