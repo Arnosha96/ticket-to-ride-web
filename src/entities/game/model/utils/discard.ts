@@ -1,5 +1,5 @@
-import { shuffle } from "../createGame";
 import type { Game } from "../types";
+import { shuffle } from "./shuffle";
 
 export function reshuffleDiscard(game: Game): Game {
   if (game.discardPile.length === 0) {

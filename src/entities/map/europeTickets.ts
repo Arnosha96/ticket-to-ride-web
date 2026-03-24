@@ -19,7 +19,6 @@ export const europeTickets: Ticket[] = [
     to: "warsaw",
     points: 12,
   },
-  // Добавляем новые билеты:
   {
     id: "london-paris",
     from: "london",

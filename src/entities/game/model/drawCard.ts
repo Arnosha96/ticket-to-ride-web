@@ -1,5 +1,33 @@
-import type { Game } from "./types";
+import type { CardColor, Game } from "./types";
 import { reshuffleDiscard } from "./utils/discard"; 
+import { shuffle } from "./utils/shuffle";
+
+export function refreshFaceUpIfNeeded(game: Game): Game {
+  const locomotiveCount = game.faceUpCards.filter(c => c === "locomotive").length;
+  if (locomotiveCount < 3) return game;
+
+  let newDiscard = [...game.discardPile, ...game.faceUpCards];
+  let newDeck = [...game.deck];
+  const newFaceUp: CardColor[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    if (newDeck.length === 0) {
+      if (newDiscard.length === 0) break; 
+      newDeck = shuffle(newDiscard);
+      newDiscard = [];
+    }
+    newFaceUp.push(newDeck[0]);
+    newDeck = newDeck.slice(1);
+  }
+
+  const updated = {
+    ...game,
+    deck: newDeck,
+    discardPile: newDiscard,
+    faceUpCards: newFaceUp,
+  };
+  return refreshFaceUpIfNeeded(updated);
+}
 
 export function drawCardFromFaceUp(game: Game, index: number): Game {
   if (index < 0 || index >= game.faceUpCards.length) {
@@ -7,6 +35,8 @@ export function drawCardFromFaceUp(game: Game, index: number): Game {
   }
   const playerIndex = game.currentPlayerIndex;
   const card = game.faceUpCards[index];
+  const isLocomotive = card === "locomotive";
+const newCardsDrawn = isLocomotive ? 2 : game.turn.cardsDrawn + 1;
 
   const updatedPlayers = game.players.map((p, i) =>
     i === playerIndex ? { ...p, cards: [...p.cards, card] } : p,
@@ -36,12 +66,13 @@ export function drawCardFromFaceUp(game: Game, index: number): Game {
   }
 
   return {
-    ...updatedGame,
-    turn: {
-      ...updatedGame.turn,
-      cardsDrawn: card === "locomotive" ? 2 : updatedGame.turn.cardsDrawn + 1,
-    },
-  };
+  ...updatedGame,
+  turn: {
+    ...updatedGame.turn,
+    cardsDrawn: newCardsDrawn,
+    phase: newCardsDrawn >= 2 ? "claim" : updatedGame.turn.phase,
+  },
+}
 }
 
 export function drawCardFromDeck(game: Game): Game {

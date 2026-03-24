@@ -1,5 +1,9 @@
 import type { GameAction } from "./actions";
-import { drawCardFromDeck, drawCardFromFaceUp } from "./drawCard";
+import {
+  drawCardFromDeck,
+  drawCardFromFaceUp,
+  refreshFaceUpIfNeeded,
+} from "./drawCard";
 import { checkGameEnd } from "./gameEnd";
 import { getCurrentPlayer } from "./selectors/getCurrentPlayer";
 import { getRoute } from "./selectors/getRoute";
@@ -16,6 +20,12 @@ export function dispatch(game: Game, action: GameAction): GameResult {
     case "CLAIM_ROUTE":
       return handleClaimRoute(game, action);
 
+    case "DRAW_TICKETS":
+      return handleDrawTickets(game);
+
+    case "CONFIRM_TICKETS":
+      return handleConfirmTickets(game, action.selectedIds);
+
     default:
       return { ok: false, error: "Unknown action" };
   }
@@ -23,27 +33,26 @@ export function dispatch(game: Game, action: GameAction): GameResult {
 
 function handleDrawCard(
   game: Game,
-  action: Extract<GameAction, { type: "DRAW_CARD" }>
+  action: Extract<GameAction, { type: "DRAW_CARD" }>,
 ): GameResult {
-
   if (game.status !== "playing")
-    return { ok: false, error: "Game is not active" }
+    return { ok: false, error: "Game is not active" };
 
   if (game.turn.phase !== "draw")
-    return { ok: false, error: "Cannot draw cards in this phase" }
+    return { ok: false, error: "Cannot draw cards in this phase" };
 
   if (game.turn.cardsDrawn >= 2)
-    return { ok: false, error: "Already drew 2 cards this turn" }
+    return { ok: false, error: "Already drew 2 cards this turn" };
 
-  let updatedGame: Game
+  let updatedGame: Game;
 
   if (action.source === "deck") {
-    if (game.deck.length === 0)
-      return { ok: false, error: "Deck is empty" }
+    if (game.deck.length === 0) return { ok: false, error: "Deck is empty" };
 
-    updatedGame = drawCardFromDeck(game)
+    updatedGame = drawCardFromDeck(game);
   } else {
-    updatedGame = drawCardFromFaceUp(game, action.index)
+    updatedGame = drawCardFromFaceUp(game, action.index);
+    updatedGame = refreshFaceUpIfNeeded(updatedGame);
   }
 
   if (updatedGame.turn.cardsDrawn >= 2) {
@@ -53,12 +62,12 @@ function handleDrawCard(
         phase: "claim",
         cardsDrawn: updatedGame.turn.cardsDrawn,
       },
-    }
+    };
   }
 
-  updatedGame = checkGameEnd(updatedGame)
+  updatedGame = checkGameEnd(updatedGame);
 
-  return { ok: true, game: updatedGame }
+  return { ok: true, game: updatedGame };
 }
 
 function handleEndTurn(game: Game): GameResult {
@@ -70,10 +79,80 @@ function handleEndTurn(game: Game): GameResult {
     turn: {
       phase: "draw",
       cardsDrawn: 0,
+      offeredTickets: undefined,
     },
   };
 
   return { ok: true, game: updatedGame };
+}
+
+function handleDrawTickets(game: Game): GameResult {
+  if (game.status !== "playing")
+    return { ok: false, error: "Game is not active" };
+  if (game.turn.phase !== "draw" || game.turn.cardsDrawn !== 0) {
+    return { ok: false, error: "Cannot draw tickets now" };
+  }
+  if (game.ticketDeck.length === 0) {
+    return { ok: false, error: "Ticket deck is empty" };
+  }
+  console.log("qweasd");
+  const count = Math.min(3, game.ticketDeck.length);
+  const offered = game.ticketDeck.slice(0, count);
+  const newTicketDeck = game.ticketDeck.slice(count);
+
+  return {
+    ok: true,
+    game: {
+      ...game,
+      ticketDeck: newTicketDeck,
+      turn: {
+        phase: "ticketSelection",
+        cardsDrawn: game.turn.cardsDrawn,
+        offeredTickets: offered,
+      },
+    },
+  };
+}
+
+function handleConfirmTickets(game: Game, selectedIds: string[]): GameResult {
+  if (game.status !== "playing")
+    return { ok: false, error: "Game is not active" };
+  if (game.turn.phase !== "ticketSelection" || !game.turn.offeredTickets) {
+    return { ok: false, error: "Not in ticket selection phase" };
+  }
+
+  const offered = game.turn.offeredTickets;
+  const selectedTickets = offered.filter((t) => selectedIds.includes(t.id));
+  if (selectedTickets.length !== selectedIds.length) {
+    return { ok: false, error: "Invalid ticket selection" };
+  }
+  if (selectedTickets.length < 1 || selectedTickets.length > offered.length) {
+    return {
+      ok: false,
+      error: `Must select between 1 and ${offered.length} tickets`,
+    };
+  }
+
+  const player = getCurrentPlayer(game);
+  const updatedPlayers = game.players.map((p) =>
+    p.id === player.id
+      ? { ...p, tickets: [...p.tickets, ...selectedTickets] }
+      : p,
+  );
+
+  return {
+    ok: true,
+    game: {
+      ...game,
+      players: updatedPlayers,
+      turn: {
+        phase: "draw",
+        cardsDrawn: 0,
+        offeredTickets: undefined,
+      },
+      currentPlayerIndex: (game.currentPlayerIndex + 1) % game.players.length,
+    },
+  };
 }
 
 function handleClaimRoute(
@@ -106,17 +185,20 @@ function handleClaimRoute(
     }
   }
 
- if (!isGray) {
-    const allMatch = usedColorCards.every(c => c === requiredColor);
+  if (!isGray) {
+    const allMatch = usedColorCards.every((c) => c === requiredColor);
     if (!allMatch) {
       return { ok: false, error: `All colored cards must be ${requiredColor}` };
     }
   } else {
     if (usedColorCards.length > 0) {
       const firstColor = usedColorCards[0];
-      const allSameColor = usedColorCards.every(c => c === firstColor);
+      const allSameColor = usedColorCards.every((c) => c === firstColor);
       if (!allSameColor) {
-        return { ok: false, error: "All colored cards must be the same color for a gray route" };
+        return {
+          ok: false,
+          error: "All colored cards must be the same color for a gray route",
+        };
       }
     }
   }
@@ -130,15 +212,15 @@ function handleClaimRoute(
   }
 
   const updatedPlayers = game.players.map((p) =>
-  p.id === player.id
-    ? {
-        ...p,
-        cards: playerCards,
-        score: p.score + route.length,
-        trains: p.trains - route.length,
-      }
-    : p,
-)
+    p.id === player.id
+      ? {
+          ...p,
+          cards: playerCards,
+          score: p.score + route.length,
+          trains: p.trains - route.length,
+        }
+      : p,
+  );
   const updatedRoutes = game.routes.map((r) =>
     r.id === route.id ? { ...r, ownerId: player.id } : r,
   );
@@ -151,6 +233,7 @@ function handleClaimRoute(
     turn: {
       phase: "draw",
       cardsDrawn: 0,
+      offeredTickets: undefined,
     },
     currentPlayerIndex: (game.currentPlayerIndex + 1) % game.players.length,
   };

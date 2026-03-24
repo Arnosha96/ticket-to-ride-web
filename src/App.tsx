@@ -1,12 +1,14 @@
 import { createGame } from "./entities/game/model/createGame";
 import { dispatch } from "./entities/game/model/dispatch";
+import { refreshFaceUpIfNeeded } from "./entities/game/model/drawCard";
 import { getCurrentPlayer } from "./entities/game/model/selectors/getCurrentPlayer";
 import { europeRoutes } from "./entities/map/europe";
 
 function App() {
   let game = createGame(["Alice", "Artur"], europeRoutes);
+  game = refreshFaceUpIfNeeded(game);
 
-  console.log('Game1:', game)
+  console.log("Game1:", game);
 
   let result = dispatch(game, {
     type: "DRAW_CARD",
@@ -43,7 +45,7 @@ function App() {
     })),
   );
 
-  console.log('Game:', game)
+  console.log("Game:", game);
 
   result = dispatch(game, {
     type: "END_TURN",
@@ -51,20 +53,22 @@ function App() {
   game = result.ok ? result.game : game;
 
   result = dispatch(game, {
-    type: "DRAW_CARD",
-    source: "faceUp",
-    index: 2,
+    type: "DRAW_TICKETS",
   });
   game = result.ok ? result.game : game;
 
+  console.log("offeredTickets", game.turn.offeredTickets);
+
+  //// TO DO убрать тернарник
   result = dispatch(game, {
-    type: "DRAW_CARD",
-    source: "faceUp",
-    index: 2,
+    type: "CONFIRM_TICKETS",
+    selectedIds: game.turn.offeredTickets
+      ? [game.turn.offeredTickets[0].id]
+      : [],
   });
   game = result.ok ? result.game : game;
 
-  console.log('Game:', game)
+  console.log("Game:", game);
 
   return <div>Check console</div>;
 }

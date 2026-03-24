@@ -44,11 +44,13 @@ export interface Game {
   currentPlayerIndex: number
   status: GameStatus
   turn: TurnState
+  winnerId?: PlayerId[]
 }
 
 export interface TurnState {
-  phase: "draw" | "claim";
+  phase: "draw" | "claim" | "ticketSelection"; 
   cardsDrawn: number;
+  offeredTickets?: Ticket[]; 
 }
 
 export type GameResult =
@@ -61,3 +63,4 @@ export interface Ticket {
   to: CityId;
   points: number;
 }
+
