@@ -31,6 +31,18 @@ export function dispatch(game: Game, action: GameAction): GameResult {
   }
 }
 
+function getPointsForLength(length: number): number {
+  const pointsMap: Record<number, number> = {
+    1: 1,
+    2: 2,
+    3: 4,
+    4: 7,
+    6: 15,
+    8: 21,
+  };
+  return pointsMap[length] ?? length;
+}
+
 function handleDrawCard(
   game: Game,
   action: Extract<GameAction, { type: "DRAW_CARD" }>,
@@ -73,7 +85,7 @@ function handleDrawCard(
 function handleEndTurn(game: Game): GameResult {
   const nextPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
 
-  const updatedGame: Game = {
+  let updatedGame: Game = {
     ...game,
     currentPlayerIndex: nextPlayerIndex,
     turn: {
@@ -82,6 +94,7 @@ function handleEndTurn(game: Game): GameResult {
       offeredTickets: undefined,
     },
   };
+  updatedGame = checkGameEnd(updatedGame);
 
   return { ok: true, game: updatedGame };
 }
@@ -95,7 +108,6 @@ function handleDrawTickets(game: Game): GameResult {
   if (game.ticketDeck.length === 0) {
     return { ok: false, error: "Ticket deck is empty" };
   }
-  console.log("qweasd");
   const count = Math.min(3, game.ticketDeck.length);
   const offered = game.ticketDeck.slice(0, count);
   const newTicketDeck = game.ticketDeck.slice(count);
@@ -166,9 +178,25 @@ function handleClaimRoute(
   const route = getRoute(game, action.routeId);
   if (!route) return { ok: false, error: "Route not found" };
   if (route.ownerId) return { ok: false, error: "Route already claimed" };
+
   if (action.cards.length !== route.length)
     return { ok: false, error: "Wrong number of cards" };
 
+  if (route.parallelGroupId) {
+    const parallelRoute = game.routes.find(
+      (r) =>
+        r.parallelGroupId === route.parallelGroupId &&
+        r.id !== route.id &&
+        r.ownerId !== undefined,
+    );
+    if (parallelRoute) {
+      return {
+        ok: false,
+        error: "The parallel route in this double route is already taken",
+      };
+    }
+  }
+  
   if (player.trains < route.length)
     return { ok: false, error: "Not enough trains" };
 
@@ -216,7 +244,7 @@ function handleClaimRoute(
       ? {
           ...p,
           cards: playerCards,
-          score: p.score + route.length,
+          score: p.score + getPointsForLength(route.length),
           trains: p.trains - route.length,
         }
       : p,

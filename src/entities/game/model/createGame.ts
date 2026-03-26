@@ -90,5 +90,7 @@ export function createGame(playerNames: string[], routes: Route[]): Game {
     currentPlayerIndex: 0,
     status: "playing",
     turn: { phase: "draw", cardsDrawn: 0 },
+    finalRoundTriggered: false,
+    finalRoundStartPlayerIndex: undefined,
   };
 }

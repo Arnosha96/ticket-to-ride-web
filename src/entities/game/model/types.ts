@@ -29,6 +29,7 @@ export interface Route {
   length: number;
   color: CardColor | "gray";
   ownerId?: PlayerId;
+  parallelGroupId?: string;
 }
 
 export type GameStatus = "waiting" | "playing" | "finished";
@@ -45,6 +46,8 @@ export interface Game {
   status: GameStatus
   turn: TurnState
   winnerId?: PlayerId[]
+  finalRoundTriggered: boolean;  
+  finalRoundStartPlayerIndex?: number;
 }
 
 export interface TurnState {
