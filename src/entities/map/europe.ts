@@ -2,7 +2,7 @@ import type { Route } from "../game/model/types";
 
 export const europeRoutes: Route[] = [
   {
-    id: "paris-berlin-a", // теперь у Париж-Берлин будет два маршрута
+    id: "paris-berlin-a",
     cityA: "paris",
     cityB: "berlin",
     length: 4,
@@ -14,7 +14,7 @@ export const europeRoutes: Route[] = [
     cityA: "paris",
     cityB: "berlin",
     length: 4,
-    color: "blue", // другой цвет
+    color: "blue",
     parallelGroupId: "paris-berlin-double",
   },
   {
