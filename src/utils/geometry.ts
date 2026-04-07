@@ -34,7 +34,7 @@ export function getRouteSegments(
   cityB: City,
   segmentsCount: number,
 ) {
-  const segments = [];
+  const segments: { x: number; y: number; }[] = [];
 
   const dx = cityB.x - cityA.x;
   const dy = cityB.y - cityA.y;

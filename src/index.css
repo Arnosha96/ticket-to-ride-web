@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.qweasd {
+    background-image: url('../public/map.png');
+    background-size: contain;
+}
