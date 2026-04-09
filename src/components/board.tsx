@@ -92,8 +92,8 @@ const Board = () => {
     <div className="w-screen h-screen bg-[#e6dcc6] flex items-center justify-center">
       {/* ФОН */}
       <img
-        src="/map.png"
-        alt="map"
+        src="/background.png"
+        alt="background"
         className="absolute inset-0 w-screen max-w-[100vw] max-h-[100vh]"
       />
 
@@ -118,7 +118,7 @@ const Board = () => {
             transition: scale === 1 ? "transform 0.2s ease-out" : "none",
           }}
         >
-          <img src="/map1.png" alt="map" className="w-full h-full" />
+          <img src="/map.png" alt="map" className="w-full h-full" />
 
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
             <RoutesLayer />
