@@ -89,7 +89,7 @@ const Board = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-[#e6dcc6] flex items-center justify-center">
+    <div className="w-screen h-screen bg-[#e1d4b5] flex items-center justify-center">
       {/* ФОН */}
       <img
         src="/background.png"
@@ -117,10 +117,19 @@ const Board = () => {
             transformOrigin: "top left",
             transition: scale === 1 ? "transform 0.2s ease-out" : "none",
           }}
+          className="relative w-full h-full"
         >
-          <img src="/map.png" alt="map" className="w-full h-full" />
-
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+          {/* Карта как растровое изображение – растягивается на весь контейнер */}
+          <img
+            src="/map.png"
+            alt="map"
+            className="absolute top-0 left-0 w-full h-full object-fill"
+          />
+          {/* SVG с городами и маршрутами – поверх карты, с теми же размерами */}
+          <svg
+            className="absolute top-0 left-0 w-full h-full"
+            viewBox="0 0 100 100"
+          >
             <RoutesLayer />
             <CitiesLayer />
           </svg>
