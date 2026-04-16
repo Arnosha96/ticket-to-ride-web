@@ -400,7 +400,7 @@ export const europeRoutes: Route[] = [
     cityA: "roma",
     cityB: "brindisi",
     length: 2,
-    color: "white",
+    color: "black",
     extra: false,
   },
   {
