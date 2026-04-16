@@ -2,14 +2,15 @@ import { useState } from "react";
 import { cities } from "../entities/map/europe/cities";
 import { europeRoutes } from "../entities/map/europe/routes";
 import {
-  getAngle,
+  getBezierTangent,
+  getCurvePoints,
   getRouteColor,
-  getRouteOffset,
-  getRouteSegments,
+  getRouteSegmentsCurved,
 } from "../utils/geometry";
 
 const RoutesLayer = () => {
   const [hoveredRouteId, setHoveredRouteId] = useState<string | null>(null);
+
   return (
     <>
       {europeRoutes.map((route) => {
@@ -18,9 +19,19 @@ const RoutesLayer = () => {
 
         if (!cityA || !cityB) return null;
 
-        const { offsetX, offsetY } = getRouteOffset(route, cityA, cityB);
+        const segments = getRouteSegmentsCurved(
+          cityA,
+          cityB,
+          route,
+          route.length,
+        );
 
-        const segments = getRouteSegments(cityA, cityB, route.length);
+        const curve = getCurvePoints(cityA, cityB, route, europeRoutes);
+        if (!curve) return null;
+
+        const pathD = `M ${curve.A.x} ${curve.A.y} Q ${curve.C.x} ${curve.C.y} ${curve.B.x} ${curve.B.y}`;
+
+        const isHovered = hoveredRouteId === route.id;
 
         return (
           <g
@@ -30,31 +41,21 @@ const RoutesLayer = () => {
             onClick={() => console.log("clicked", route.id)}
             style={{ cursor: "pointer" }}
           >
-            <line
-              x1={cityA.x + offsetX}
-              y1={cityA.y + offsetY}
-              x2={cityB.x + offsetX}
-              y2={cityB.y + offsetY}
-              stroke="transparent"
-              strokeWidth={4}
-            />
+            <path d={pathD} fill="none" stroke="transparent" strokeWidth={8} />
+
             {segments.map((seg, i) => {
-              const w = 5;
-              const h = 2;
-              const isHovered = hoveredRouteId === route.id;
+              const angle = getBezierTangent(seg.t, curve.A, curve.C, curve.B);
+
               return (
                 <rect
                   key={i}
-                  x={`${seg.x + offsetX - w / 2}`}
-                  y={`${seg.y + offsetY - h / 2}`}
-                  width={w}
-                  height={h}
-                  stroke={isHovered ? "white" : "black"}
-                  strokeWidth={isHovered ? 0.4 : 0.2}
+                  x={seg.x - 2.5}
+                  y={seg.y - 1}
+                  width={4}
+                  height={1.75}
                   fill={getRouteColor(route)}
-                  opacity={isHovered ? 0.6 : 1}
-                  transform={`rotate(${getAngle(cityA, cityB)} ${seg.x + offsetX} ${seg.y + offsetY})`}
-                  className="cursor-pointer"
+                  transform={`rotate(${angle} ${seg.x} ${seg.y})`}
+                  opacity={isHovered ? 0.7 : 1}
                 />
               );
             })}
