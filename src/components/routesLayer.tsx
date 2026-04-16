@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { cities } from "../entities/map/europe/cities";
-import { europeRoutes } from "../entities/map/europe";
+import { europeRoutes } from "../entities/map/europe/routes";
 import {
   getAngle,
   getRouteColor,
