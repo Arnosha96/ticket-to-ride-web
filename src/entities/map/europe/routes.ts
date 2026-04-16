@@ -1,5 +1,6 @@
 import type { Route } from "../../game/model/types";
 
+
 export const europeRoutes: Route[] = [
   {
     id: "lisboa-madrid",
@@ -110,11 +111,19 @@ export const europeRoutes: Route[] = [
     extra: false,
   },
   {
+    id: "dieppe-bruxelles",
+    cityA: "dieppe",
+    cityB: "bruxelles",
+    length: 2,
+    color: "green",
+    extra: false,
+  },
+  {
     id: "brest-paris",
     cityA: "brest",
     cityB: "paris",
     length: 3,
-    color: "green",
+    color: "black",
     extra: false,
   },
   {
@@ -122,7 +131,7 @@ export const europeRoutes: Route[] = [
     cityA: "dieppe",
     cityB: "paris",
     length: 1,
-    color: "black",
+    color: "purple",
     extra: false,
   },
   {
@@ -139,7 +148,7 @@ export const europeRoutes: Route[] = [
     cityA: "dieppe",
     cityB: "london",
     length: 2,
-    color: "black",
+    color: "gray",
     extra: true,
     parallelGroupId: "dieppe-london-double",
   },
@@ -166,7 +175,7 @@ export const europeRoutes: Route[] = [
     cityA: "london",
     cityB: "amsterdam",
     length: 2,
-    color: "black",
+    color: "gray",
     extra: false,
   },
   {
@@ -209,14 +218,14 @@ export const europeRoutes: Route[] = [
     cityA: "paris",
     cityB: "frankfurt",
     length: 3,
-    color: "green",
+    color: "orange",
     extra: true,
     parallelGroupId: "paris-frankfurt-double",
   },
   {
     id: "paris-zurich",
     cityA: "paris",
-    cityB: "frankfurt",
+    cityB: "zurich",
     length: 3,
     color: "black",
     extra: true,
@@ -226,7 +235,7 @@ export const europeRoutes: Route[] = [
     cityA: "bruxelles",
     cityB: "amsterdam",
     length: 1,
-    color: "yellow",
+    color: "black",
     extra: true,
   },
   {
@@ -258,7 +267,7 @@ export const europeRoutes: Route[] = [
     cityA: "amsterdam",
     cityB: "frankfurt",
     length: 2,
-    color: "yellow",
+    color: "white",
     extra: true,
   },
   {
@@ -266,7 +275,7 @@ export const europeRoutes: Route[] = [
     cityA: "marseille",
     cityB: "roma",
     length: 4,
-    color: "black",
+    color: "gray",
     extra: true,
   },
   {
@@ -290,16 +299,26 @@ export const europeRoutes: Route[] = [
     cityA: "frankfurt",
     cityB: "munchen",
     length: 2,
-    color: "yellow",
+    color: "purple",
     extra: false,
   },
   {
-    id: "essen-kobenhavn",
+    id: "essen-kobenhavn-a",
     cityA: "essen",
     cityB: "kobenhavn",
     length: 3,
     color: "gray",
     extra: false,
+    parallelGroupId: "essen-kobenhavn-double",
+  },
+  {
+    id: "essen-kobenhavn-b",
+    cityA: "essen",
+    cityB: "kobenhavn",
+    length: 3,
+    color: "gray",
+    extra: false,
+    parallelGroupId: "essen-kobenhavn-double",
   },
   {
     id: "stockholm-kobenhavn-a",
@@ -382,7 +401,7 @@ export const europeRoutes: Route[] = [
     cityA: "roma",
     cityB: "brindisi",
     length: 2,
-    color: "black",
+    color: "white",
     extra: false,
   },
   {
@@ -422,7 +441,7 @@ export const europeRoutes: Route[] = [
     cityA: "berlin",
     cityB: "danzig",
     length: 4,
-    color: "yellow",
+    color: "gray",
     extra: false,
   },
   {
@@ -498,7 +517,7 @@ export const europeRoutes: Route[] = [
     cityA: "wien",
     cityB: "zagrab",
     length: 2,
-    color: "green",
+    color: "gray",
     extra: false,
   },
   {
@@ -565,7 +584,7 @@ export const europeRoutes: Route[] = [
     color: "red",
     extra: false,
   },
-  {
+   {
     id: "kyiv-warszawa",
     cityA: "kyiv",
     cityB: "warszawa",
@@ -820,5 +839,5 @@ export const europeRoutes: Route[] = [
     length: 4,
     color: "white",
     extra: false,
-  },
+  }
 ];
