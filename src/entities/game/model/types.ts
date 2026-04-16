@@ -28,6 +28,7 @@ export interface Route {
   cityB: CityId;
   length: number;
   color: CardColor | "gray";
+  extra: boolean;
   ownerId?: PlayerId;
   parallelGroupId?: string;
 }
