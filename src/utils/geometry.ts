@@ -1,4 +1,4 @@
-import type { City } from "../entities/game/model/cities";
+import type { City } from "../entities/map/europe/cities";
 import type { Route } from "../entities/game/model/types";
 
 export function getRouteColor(route: Route) {
@@ -34,7 +34,7 @@ export function getRouteSegments(
   cityB: City,
   segmentsCount: number,
 ) {
-  const segments: { x: number; y: number; }[] = [];
+  const segments: { x: number; y: number }[] = [];
 
   const dx = cityB.x - cityA.x;
   const dy = cityB.y - cityA.y;
@@ -60,9 +60,7 @@ export function getRouteSegments(
   const padding = 0.05;
 
   for (let i = 0; i < segmentsCount; i++) {
-    const t =
-      padding +
-      ((i + 0.5) / segmentsCount) * (1 - 2 * padding);
+    const t = padding + ((i + 0.5) / segmentsCount) * (1 - 2 * padding);
 
     const x = startX + newDx * t;
     const y = startY + newDy * t;
@@ -71,7 +69,7 @@ export function getRouteSegments(
   }
 
   return segments;
-} 
+}
 
 export function getAngle(cityA: City, cityB: City) {
   const dx = cityB.x - cityA.x;

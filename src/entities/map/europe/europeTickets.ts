@@ -1,4 +1,4 @@
-import type { Ticket } from "../game/model/types";
+import type { Ticket } from "../../game/model/types";
 
 export const europeTickets: Ticket[] = [
   {

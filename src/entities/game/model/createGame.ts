@@ -1,4 +1,4 @@
-import { europeTickets } from "../../map/europeTickets";
+import { europeTickets } from "../../map/europe/europeTickets";
 import type { CardColor, Game, Player, Route, Ticket } from "./types";
 import { shuffle } from "./utils/shuffle";
 

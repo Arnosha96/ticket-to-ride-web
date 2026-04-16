@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cities } from "../entities/game/model/cities";
+import { cities } from "../entities/map/europe/cities";
 import { europeRoutes } from "../entities/map/europe";
 import {
   getAngle,

@@ -1,4 +1,4 @@
-import { cities } from "../entities/game/model/cities";
+import { cities } from "../entities/map/europe/cities";
 
 export const CitiesLayer = () => {
   return (
@@ -10,17 +10,12 @@ export const CitiesLayer = () => {
             cx={city.x}
             cy={city.y}
             r={1}
-            fill='white'
+            fill="white"
             stroke="black"
             strokeWidth={0.3}
             className="cursor-pointer hover:fill-yellow-300"
           />
-          <text
-            x={city.x}
-            y={city.y + 3}
-            fontSize="2"
-            textAnchor="middle"
-          >
+          <text x={city.x} y={city.y + 3} fontSize="2" textAnchor="middle">
             {city.name}
           </text>
         </>
