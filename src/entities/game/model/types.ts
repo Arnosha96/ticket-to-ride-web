@@ -27,6 +27,7 @@ export interface Route {
   cityA: CityId;
   cityB: CityId;
   length: number;
+  segments?: ManualSegment[];
   color: CardColor | "gray";
   extra: boolean;
   ownerId?: PlayerId;
@@ -67,4 +68,11 @@ export interface Ticket {
   to: CityId;
   points: number;
 }
+
+export type ManualSegment = {
+  x: number;      
+  y: number;      
+  angle: number;  
+};
+
 

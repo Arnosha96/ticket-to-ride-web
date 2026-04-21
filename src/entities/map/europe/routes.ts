@@ -1,6 +1,5 @@
 import type { Route } from "../../game/model/types";
 
-
 export const europeRoutes: Route[] = [
   {
     id: "lisboa-madrid",
@@ -471,14 +470,6 @@ export const europeRoutes: Route[] = [
     extra: false,
   },
   {
-    id: "berlin-wien",
-    cityA: "berlin",
-    cityB: "wien",
-    length: 3,
-    color: "green",
-    extra: false,
-  },
-  {
     id: "venezia-zagrab",
     cityA: "venezia",
     cityB: "zagrab",
@@ -584,7 +575,7 @@ export const europeRoutes: Route[] = [
     color: "red",
     extra: false,
   },
-   {
+  {
     id: "kyiv-warszawa",
     cityA: "kyiv",
     cityB: "warszawa",
@@ -839,5 +830,5 @@ export const europeRoutes: Route[] = [
     length: 4,
     color: "white",
     extra: false,
-  }
+  },
 ];
