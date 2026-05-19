@@ -76,7 +76,7 @@ const RoutesLayer = () => {
             cityAOffset,
             cityBOffset,
             route.length,
-            1.2,
+            0.5,
           );
         }
 
@@ -128,8 +128,8 @@ const RoutesLayer = () => {
                 key={i}
                 x={seg.x - 2.5}
                 y={seg.y - 1}
-                width={4}
-                height={1.75}
+                width={7}
+                height={1.7}
                 fill={getRouteColor(route)}
                 transform={`rotate(${seg.angle} ${seg.x} ${seg.y})`}
                 opacity={isHovered ? 0.7 : 1}
