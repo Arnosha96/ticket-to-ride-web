@@ -9,7 +9,7 @@ export const CitiesLayer = () => {
             key={city.id}
             cx={city.x}
             cy={city.y}
-            r={1}
+            r={12}
             fill="white"
             stroke="black"
             strokeWidth={0.3}

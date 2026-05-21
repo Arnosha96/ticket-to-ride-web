@@ -120,16 +120,14 @@ const Board = () => {
           className="relative w-full h-full"
         >
           {/* Карта как растровое изображение – растягивается на весь контейнер */}
-          <img
-            src="/map.png"
-            alt="map"
-            className="absolute top-0 left-0 w-full h-full object-fill"
-          />
+
           {/* SVG с городами и маршрутами – поверх карты, с теми же размерами */}
           <svg
-            className="absolute top-0 left-0 w-full h-full"
-            viewBox="0 0 100 100"
+            className="absolute inset-0 w-full h-full"
+            viewBox="0 0 2028 1244"
+            preserveAspectRatio="none"
           >
+            <image href="/map.png" width="2028" height="1244" />
             <RoutesLayer />
             <CitiesLayer />
           </svg>
