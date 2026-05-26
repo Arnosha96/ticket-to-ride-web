@@ -12,10 +12,10 @@ export const CitiesLayer = () => {
             r={12}
             fill="white"
             stroke="black"
-            strokeWidth={0.3}
+            strokeWidth={2}
             className="cursor-pointer hover:fill-yellow-300"
           />
-          <text x={city.x} y={city.y + 3} fontSize="2" textAnchor="middle">
+          <text x={city.x} y={city.y + 30} fontSize="25" textAnchor="middle">
             {city.name}
           </text>
         </>

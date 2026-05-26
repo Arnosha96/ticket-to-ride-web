@@ -126,12 +126,14 @@ const RoutesLayer = () => {
             {segments.map((seg, i) => (
               <rect
                 key={i}
-                x={seg.x - 2.5}
-                y={seg.y - 1}
-                width={7}
-                height={1.7}
+                x={seg.x - 30}
+                y={seg.y - 10}
+                width={65}
+                height={22}
                 fill={getRouteColor(route)}
                 transform={`rotate(${seg.angle} ${seg.x} ${seg.y})`}
+                stroke="gold"
+                strokeWidth={2}
                 opacity={isHovered ? 0.7 : 1}
               />
             ))}

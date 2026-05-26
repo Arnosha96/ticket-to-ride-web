@@ -772,6 +772,23 @@ export const europeRoutes: Route[] = [
     cityA: "angora",
     cityB: "erzurum",
     length: 3,
+    segments: [
+      {
+        x: 1915,
+        y: 1120,
+        angle: 98,
+      },
+      {
+        x: 1858,
+        y: 1146,
+        angle: 10,
+      },
+      {
+        x: 1790,
+        y: 1120,
+        angle: 25,
+      },
+    ],
     color: "black",
     extra: false,
   },

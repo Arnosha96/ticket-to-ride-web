@@ -16,7 +16,7 @@ export function getParallelOffset(
   if (len === 0) return { offsetX: 0, offsetY: 0 };
   const perpX = -dy / len;
   const perpY = dx / len;
-  const offsetMagnitude = 1.0;
+  const offsetMagnitude = 13;
   const sign = parallelIndex === 0 ? -1 : 1;
   return {
     offsetX: perpX * offsetMagnitude * sign,
