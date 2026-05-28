@@ -148,7 +148,7 @@ export const europeRoutes: Route[] = [
     cityB: "london",
     length: 2,
     color: "gray",
-    extra: true,
+    extra: false,
     parallelGroupId: "dieppe-london-double",
   },
   {
@@ -708,6 +708,28 @@ export const europeRoutes: Route[] = [
     cityA: "kharkiv",
     cityB: "moskva",
     length: 4,
+    segments: [
+      {
+        x: 1883,
+        y: 393,
+        angle: 35,
+      },
+      {
+        x: 1907,
+        y: 456,
+        angle: 83,
+      },
+      {
+        x: 1900,
+        y: 525,
+        angle: 102,
+      },
+      {
+        x: 1853,
+        y: 573,
+        angle: 145,
+      },
+    ],
     color: "gray",
     extra: false,
   },
@@ -724,18 +746,18 @@ export const europeRoutes: Route[] = [
     cityA: "kharkiv",
     cityB: "rostov",
     length: 2,
-    // segments: [
-    //   {
-    //     x: 1879,
-    //     y: 613,
-    //     angle: 0,
-    //   },
-    //   {
-    //     x: 1928,
-    //     y: 643,
-    //     angle: 95,
-    //   },
-    // ],
+    segments: [
+      {
+        x: 1889,
+        y: 601,
+        angle: 0,
+      },
+      {
+        x: 1922,
+        y: 645,
+        angle: 95,
+      },
+    ],
     color: "green",
     extra: false,
   },
@@ -744,6 +766,28 @@ export const europeRoutes: Route[] = [
     cityA: "sevastopol",
     cityB: "rostov",
     length: 4,
+    segments: [
+      {
+        x: 1885,
+        y: 674,
+        angle: 0,
+      },
+      {
+        x: 1820,
+        y: 674,
+        angle: 0,
+      },
+      {
+        x: 1756,
+        y: 731,
+        angle: 97,
+      },
+      {
+        x: 1748,
+        y: 794,
+        angle: 97,
+      },
+    ],
     color: "gray",
     extra: false,
   },
@@ -786,18 +830,18 @@ export const europeRoutes: Route[] = [
     length: 3,
     segments: [
       {
-        x: 1928,
-        y: 1120,
+        x: 1930,
+        y: 1150,
         angle: 82,
       },
       {
-        x: 1887,
+        x: 1897,
         y: 1156,
-        angle: 172,
+        angle: 0,
       },
       {
-        x: 1820,
-        y: 1147,
+        x: 1830,
+        y: 1152,
         angle: 20,
       },
     ],

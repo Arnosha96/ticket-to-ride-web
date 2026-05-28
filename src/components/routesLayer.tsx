@@ -125,8 +125,9 @@ const RoutesLayer = () => {
 
             {segments.map((seg, i) => (
               <rect
+              style={{borderRadius: 16}}
                 key={i}
-                x={seg.x - 45}
+                x={seg.x - 40}
                 y={seg.y - 10}
                 width={60}
                 height={23}
@@ -135,6 +136,7 @@ const RoutesLayer = () => {
                 stroke="gold"
                 strokeWidth={2}
                 opacity={isHovered ? 0.7 : 1}
+                rx={route.extra ? 12 : 0}
               />
             ))}
           </g>
