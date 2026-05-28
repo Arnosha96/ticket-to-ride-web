@@ -9,7 +9,7 @@ export type City = {
 
 export const cities: Record<CityId, City> = {
   amsterdam: { id: "amsterdam", name: "Amsterdam", x: 670, y: 390 },
-  angora: { id: "angora", name: "Angora", x: 1740, y: 1100 },
+  angora: { id: "angora", name: "Angora", x: 1760, y: 1110 },
   athina: { id: "athina", name: "Athina", x: 1385, y: 1125 },
   barcelona: { id: "barcelona", name: "Barcelona", x: 420, y: 1110 },
   berlin: { id: "berlin", name: "Berlin", x: 970, y: 468 },

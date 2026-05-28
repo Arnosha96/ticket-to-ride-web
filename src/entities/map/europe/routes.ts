@@ -784,8 +784,8 @@ export const europeRoutes: Route[] = [
         angle: 10,
       },
       {
-        x: 1790,
-        y: 1120,
+        x: 1800,
+        y: 1130,
         angle: 25,
       },
     ],

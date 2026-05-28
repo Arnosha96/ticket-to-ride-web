@@ -128,8 +128,8 @@ const RoutesLayer = () => {
                 key={i}
                 x={seg.x - 30}
                 y={seg.y - 10}
-                width={65}
-                height={22}
+                width={60}
+                height={23}
                 fill={getRouteColor(route)}
                 transform={`rotate(${seg.angle} ${seg.x} ${seg.y})`}
                 stroke="gold"
