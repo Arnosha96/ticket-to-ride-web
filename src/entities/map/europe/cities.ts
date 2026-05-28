@@ -9,7 +9,7 @@ export type City = {
 
 export const cities: Record<CityId, City> = {
   amsterdam: { id: "amsterdam", name: "Amsterdam", x: 670, y: 390 },
-  angora: { id: "angora", name: "Angora", x: 1760, y: 1110 },
+  angora: { id: "angora", name: "Angora", x: 1775, y: 1130 },
   athina: { id: "athina", name: "Athina", x: 1385, y: 1125 },
   barcelona: { id: "barcelona", name: "Barcelona", x: 420, y: 1110 },
   berlin: { id: "berlin", name: "Berlin", x: 970, y: 468 },
@@ -28,7 +28,7 @@ export const cities: Record<CityId, City> = {
   danzig: { id: "danzig", name: "Danzig", x: 1210, y: 335 },
   dieppe: { id: "dieppe", name: "Dieppe", x: 410, y: 560 },
   edinburgh: { id: "edinburgh", name: "Edinburgh", x: 370, y: 200 },
-  erzurum: { id: "erzurum", name: "Erzurum", x: 1920, y: 1075 },
+  erzurum: { id: "erzurum", name: "Erzurum", x: 1920, y: 1105 },
   essen: { id: "essen", name: "Essen", x: 800, y: 460 },
   frankfurt: { id: "frankfurt", name: "Frankfurt", x: 770, y: 610 },
   kharkiv: { id: "kharkiv", name: "Kharkiv", x: 1833, y: 615 },
@@ -51,7 +51,7 @@ export const cities: Record<CityId, City> = {
   sevastopol: { id: "sevastopol", name: "Sevastopol", x: 1735, y: 830 },
   smolensk: { id: "smolensk", name: "Smolensk", x: 1695, y: 424 },
   smyrna: { id: "smyrna", name: "Smyrna", x: 1535, y: 1180 },
-  sochi: { id: "sochi", name: "Sochi", x: 1950, y: 880 },
+  sochi: { id: "sochi", name: "Sochi", x: 1925, y: 850 },
   sofia: { id: "sofia", name: "Sofia", x: 1395, y: 943 },
   stockholm: { id: "stockholm", name: "Stockholm", x: 1100, y: 142 },
   venezia: { id: "venezia", name: "Venezia", x: 931, y: 790 },

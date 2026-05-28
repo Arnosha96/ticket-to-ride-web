@@ -41,7 +41,7 @@ export function getStraightRouteSegments(
   const startX = cityA.x + ux * inset;
   const startY = cityA.y + uy * inset;
 
-  const segmentLen = totalLen - 2 * inset;
+  const segmentLen = totalLen - 2 * inset + 20;
   if (segmentLen <= 0) return [];
 
   const angle = Math.atan2(dy, dx) * (180 / Math.PI);

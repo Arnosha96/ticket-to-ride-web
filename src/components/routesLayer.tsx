@@ -126,7 +126,7 @@ const RoutesLayer = () => {
             {segments.map((seg, i) => (
               <rect
                 key={i}
-                x={seg.x - 30}
+                x={seg.x - 45}
                 y={seg.y - 10}
                 width={60}
                 height={23}
